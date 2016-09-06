@@ -1,0 +1,3 @@
+[submodule "JSONedit"]
+	path = JSONedit
+	url = https://github.com/xy0/JSONedit.git
