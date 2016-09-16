@@ -27,95 +27,34 @@
  * @author  Anders Evenrud <andersevenrud@gmail.com>
  * @licence Simplified BSD License
  */
-(function(Application, Window, Utils, API, VFS, GUI) {
+(function(Application, GUI, Dialogs, Utils, API, VFS) {
   'use strict';
-
-  /////////////////////////////////////////////////////////////////////////////
-  // WINDOWS
-  /////////////////////////////////////////////////////////////////////////////
-
-  function ApplicationAngularWindow(app, metadata, scheme) {
-    Window.apply(this, ['ApplicationAngularWindow', {
-      icon: metadata.icon,
-      title: metadata.name,
-      width: 400,
-      height: 200
-    }, app, scheme]);
-  }
-
-  ApplicationAngularWindow.prototype = Object.create(Window.prototype);
-  ApplicationAngularWindow.constructor = Window.prototype;
-
-  ApplicationAngularWindow.prototype.init = function(wmRef, app, scheme) {
-    var root = Window.prototype.init.apply(this, arguments);
-    var self = this;
-
-    // Load and set up scheme (GUI) here
-    scheme.render(this, 'AngularWindow', root);
-
-    return root;
-  };
-
-  ApplicationAngularWindow.prototype.destroy = function() {
-    if ( Window.prototype.destroy.apply(this, arguments) ) {
-      try {
-        System.delete(System.normalizeSync('app/main'));
-      } catch ( e ) {
-        console.warn(e, e.stack);
-      }
-      return true;
-    }
-    return false;
-  };
-
-  ApplicationAngularWindow.prototype._inited = function() {
-    Window.prototype._inited.apply(this, arguments);
-
-    System.config({
-      map: {
-        app: this._app._getResource('app')
-      },
-      packages: {
-        app: {
-          format: 'register',
-          defaultExtension: 'js'
-        }
-      }
-    });
-
-    System.import('app/main').then(null, console.error.bind(console));
-  };
 
   /////////////////////////////////////////////////////////////////////////////
   // APPLICATION
   /////////////////////////////////////////////////////////////////////////////
 
-  function ApplicationAngular(args, metadata) {
-    Application.apply(this, ['ApplicationAngular', args, metadata]);
+  function ApplicationJSONEditor(args, metadata) {
+    Application.apply(this, ['ApplicationJSONEditor', args, metadata, {
+      src: 'app/index.html',
+      title: metadata.name,
+      icon: metadata.icon,
+      width: 640,
+      height: 480,
+      allow_resize: true,
+      allow_restore: true,
+      allow_maximize: true
+    }]);
   }
 
-  ApplicationAngular.prototype = Object.create(Application.prototype);
-  ApplicationAngular.constructor = Application;
-
-  ApplicationAngular.prototype.destroy = function() {
-    return Application.prototype.destroy.apply(this, arguments);
-  };
-
-  ApplicationAngular.prototype.init = function(settings, metadata) {
-    Application.prototype.init.apply(this, arguments);
-
-    var self = this;
-    this._loadScheme('./scheme.html', function(scheme) {
-      self._addWindow(new ApplicationAngularWindow(self, metadata, scheme));
-    });
-  };
+  ApplicationJSONEditor.prototype = Object.create(Application.prototype);
 
   /////////////////////////////////////////////////////////////////////////////
   // EXPORTS
   /////////////////////////////////////////////////////////////////////////////
 
   OSjs.Applications = OSjs.Applications || {};
-  OSjs.Applications.ApplicationAngular = OSjs.Applications.ApplicationAngular || {};
-  OSjs.Applications.ApplicationAngular.Class = ApplicationAngular;
+  OSjs.Applications.ApplicationJSONEditor = OSjs.Applications.ApplicationJSONEditor || {};
+  OSjs.Applications.ApplicationJSONEditor.Class = Object.seal(ApplicationJSONEditor);
 
-})(OSjs.Core.Application, OSjs.Core.Window, OSjs.Utils, OSjs.API, OSjs.VFS, OSjs.GUI);
+})(OSjs.Helpers.IFrameApplication, OSjs.GUI, OSjs.Dialogs, OSjs.Utils, OSjs.API, OSjs.VFS);

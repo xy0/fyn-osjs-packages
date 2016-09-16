@@ -1,34 +1,53 @@
-<!DOCTYPE html>
-<!--[if lt IE 7]>      <html lang="en" ng-app="newApp" class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
-<!--[if IE 7]>         <html lang="en" ng-app="newApp" class="no-js lt-ie9 lt-ie8"> <![endif]-->
-<!--[if IE 8]>         <html lang="en" ng-app="newApp" class="no-js lt-ie9"> <![endif]-->
-<!--[if gt IE 8]><!--> <html lang="en" ng-app="newApp" class="no-js"> <!--<![endif]-->
+<!doctype html>
+<html ng-app="JSONedit">
 <head>
-  <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>New App</title>
-  <meta name="description" content="">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" type="text/css" href="assets/libraries/Bootstrap/bootstrap.css">
+    <script src="bower_components/jquery/dist/jquery.min.js"></script>
+    <script src="bower_components/jquery-ui/jquery-ui.min.js"></script>
+    <script src="bower_components/angular/angular.min.js"></script>
+    <script src="bower_components/angular-ui-sortable/sortable.min.js"></script>
+    <script src="../iframeapi.js"></script> <!-- for osjs integration -->
+    <link href="bower_components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+
+    <script src="js/directives.js"></script>
+    <script src="js/JSONedit.js"></script>
+    <link href="css/styles.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
-  <ul class="menu">
-    <li><a href="#/">Home</a></li>
-    <li><a href="#/view1">View 1</a></li>
-  </ul>
 
-  <!--[if lt IE 7]>
-      <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
-  <![endif]-->
+    <script>
+        // The event emitted when everything is loaded
+        OSjs.on('init', function() {
+          console.log(arguments);
+          // Send something
+          OSjs.send({cool: 'Awesome'});
+        });
+        // The event emitted when app is closed
+        OSjs.on('destroy', function() {
+        });
+        // Whenever you get data without `message` parameter
+        OSjs.on('data', function(data) {
+          console.log(data.zazz); // === "jazz"
+        });
+        // Whenever you get data with `message` set
+        OSjs.on('message:something', function(data) {
+          console.log(data.bar); // === "baz"
+        });
+    </script>
 
-  <div ng-view></div>
+    <div id="mainView" ng-controller="MainViewCtrl">
+        <h2>JSONeditor</h2>
 
-  <!-- In production use:
-  <script src="//ajax.googleapis.com/ajax/libs/angularjs/x.x.x/angular.min.js"></script>
-  -->
-  <script src="assets/libraries/AngularJS/angular.js"></script>
-  <script src="assets/libraries/AngularJS/angular-route.js"></script>
-  <script src="app.js"></script> <!-- must be below AngularJS imports -->
-  <script src="controllers/view1.js"></script>
+        <div class="jsonView">
+            <json child="jsonData" default-collapsed="false" type="object"></json>
+        </div>
+
+        <hr>
+        <div>
+            <textarea id="jsonTextarea" ng-model="jsonString"></textarea>
+            <span class="red" ng-if="!wellFormed">JSON not well-formed!</span>
+        </div>
+  </div>
+
+    </div>
 </body>
 </html>
