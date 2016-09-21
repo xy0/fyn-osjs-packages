@@ -1,11 +1,7 @@
 #mainView {
     margin: 30px auto;
-    width: 700px;
 }
-#jsonTextarea {
-    width: 700px;
-    height: 300px;
-}
+
 .red {
     color: red;
 }

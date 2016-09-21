@@ -1,12 +1,17 @@
 'use strict';
 
-var app = angular.module('exampleApp', ['JSONedit']);
+var app = angular.module('JSONEditor', ['JSONedit']);
 
 function MainViewCtrl($scope, $filter) {
 
+
+    $scope.sendstuff = function() {
+         OSjs.send({cool: 'Awesome'});
+    }
+
     // example JSON
     $scope.jsonData = {
-        Name: "Clayton", "Last Name": "Miller", Address: {Street: "Neverland 42"}, Hobbies: ["doing stuff", "dreaming"]
+        Name: "nameymcname", "Last Name": "Miller", Address: {Street: "Neverland 42"}, Hobbies: ["doing stuff", "dreaming"]
     };
 
     $scope.$watch('jsonData', function(json) {

@@ -34,8 +34,8 @@
   // APPLICATION
   /////////////////////////////////////////////////////////////////////////////
 
-  function ApplicationJSONEditor(args, metadata) {
-    Application.apply(this, ['ApplicationJSONEditor', args, metadata, {
+  function IFrameApplicationJSONEditor(args, metadata) {
+    Application.apply(this, ['IFrameApplicationJSONEditor', args, metadata, {
       src: 'app/index.html',
       title: metadata.name,
       icon: metadata.icon,
@@ -47,14 +47,56 @@
     }]);
   }
 
-  ApplicationJSONEditor.prototype = Object.create(Application.prototype);
+  //   // If you send `message` it gets caught by the custom defined event
+  // this.postMessage({message: 'something', bar: 'baz'});
+
+  // // But not this. It will get caught by the global one
+  // this.postMessage({zazz: 'jazz'});
+
+
+
+  IFrameApplicationJSONEditor.prototype = Object.create(Application.prototype);
+
+
+
+
+    // To check messages from iframe
+  IFrameApplicationJSONEditor.prototype.onPostMessage = function(message, ev) {
+    console.warn(message);
+
+
+    VFS.read("home:///asdf.txt", function(err, res) {
+      alert("eep");
+      if ( err ) {
+        alert(err);
+        return;
+      }
+
+      alert(res); // The file data
+    }, {/* options */});
+
+
+    // app._api(methodName, methodArgs, function(error, result) { // or `this._app`
+    //   if ( error ) {
+    //     alert('An error occured: ' + error);
+    //     return;
+    //   }
+
+    //   // Or else do something with 'result'
+    //   // In this example it should return {foo: bar}
+    //   alert(result.foo);
+    // });
+
+    
+  }
+
 
   /////////////////////////////////////////////////////////////////////////////
   // EXPORTS
   /////////////////////////////////////////////////////////////////////////////
 
   OSjs.Applications = OSjs.Applications || {};
-  OSjs.Applications.ApplicationJSONEditor = OSjs.Applications.ApplicationJSONEditor || {};
-  OSjs.Applications.ApplicationJSONEditor.Class = Object.seal(ApplicationJSONEditor);
+  OSjs.Applications.IFrameApplicationJSONEditor = OSjs.Applications.IFrameApplicationJSONEditor || {};
+  OSjs.Applications.IFrameApplicationJSONEditor.Class = Object.seal(IFrameApplicationJSONEditor);
 
 })(OSjs.Helpers.IFrameApplication, OSjs.GUI, OSjs.Dialogs, OSjs.Utils, OSjs.API, OSjs.VFS);
